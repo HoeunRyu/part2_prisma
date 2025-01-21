@@ -1,0 +1,46 @@
+model User {
+    id        String  @id @default(uuid())
+    nickName  String
+    introduce String
+    isActive  Boolean
+
+    TalkTalkBearUsers TalkTalkBearUsers?
+    TalkTalkBearChat  TalkTalkBearChat?
+    chatLogs          chatLogs?
+}
+
+//톡톡베어 사용자 정보
+model TalkTalkBearUsers {
+    id              String @id @default(uuid())
+    remaining_talks Int //남은 대화 횟수
+    userId          String @unique
+    user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+//톡톡베어 대화
+enum Mode {
+    기계곰
+    천사곰
+}
+
+model TalkTalkBearChat {
+    id        String   @id @default(uuid())
+    message   String //사용자의 고민 
+    mode      Mode     @default(기계곰) //입시곰 대답 모드
+    response  String //입시곰의 답변
+    createdAt DateTime @default(now()) //대화 생성 날짜 
+    userId    String   @unique //대화를 시작한 사용자 ID
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    chatLogs chatLogs[]
+}
+
+//대화 로그 (오늘의 대화 보기)
+model chatLogs {
+    id        String           @id @default(uuid())
+    createdAt DateTime         @default(now()) //대화 로그 생성 날짜 
+    userId    String           @unique //대화를 시작한 사용자 ID
+    user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    chatId    String           @unique //연결된 대화 ID
+    chat      TalkTalkBearChat @relation(fields: [chatId], references: [id])
+}

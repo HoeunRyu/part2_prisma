@@ -1,0 +1,107 @@
+model User2 {
+    id        String  @id @default(uuid())
+    nickName  String
+    introduce String
+    isActive  Boolean
+
+    /// 1:1
+    account       Account?
+    TalkBearUsers TalkBearUsers?
+
+    /// 1:N
+    resources    Resource[]
+    accountId    Int?
+    ExamQuestion ExamQuestion[]
+    SearchLog    SearchLog[]
+}
+
+// 세정 병정개미
+//계좌 등록하기
+model Account {
+    id            String @id @default(uuid())
+    bankName      String // 은행명
+    accountNumber String // 계좌 번호
+    accountHolder String // 예금주
+    userId        String @unique
+    user2         User2  @relation(fields: [userId], references: [id], onDelete: Cascade)
+    // MyProfile 모델과 관계
+}
+
+// 호은 병정개미
+model Resource {
+    id            String    @id @default(uuid())
+    userId        String
+    title         String
+    price         Int       @default(0)
+    category1     Category
+    category2     Category?
+    thumbnailImg  String
+    thumbnailText String?
+    desc          String?
+    recommend     String[]
+    keyword       String[]
+    attachment    String[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // ResourceReviews ResourceReviews[] //XXX: 자료-리뷰 1:N관계
+    User2   User2?  @relation(fields: [user2Id], references: [id], onDelete: Cascade)
+    user2Id String?
+
+    @@index([category1])
+}
+
+//talk talk bear 사용자 정보
+// 수빈 병정개미
+model TalkBearUsers {
+    id              String @id @default(uuid())
+    remaining_talks Int
+    userId          String @unique
+    user2           User2  @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// 재완 병정개미
+model ExamQuestion {
+    id          String   @id @default(uuid())
+    title       String // 문제 제목
+    description String // 문제 지문
+    language    String // 언어 (Korean, English)
+    userId      Int // FK
+    createdAt   DateTime @default(now())
+    // recommended RecommendedQuestion[] // 1:N 관계 (추천 기출 문제)
+    User2       User2?   @relation(fields: [user2Id], references: [id])
+    user2Id     String?
+}
+
+// 민호 개미
+model SearchLog {
+    id            String  @id @default(uuid())
+    userId        String
+    searchKeyword String
+    User2         User2?  @relation(fields: [user2Id], references: [id])
+    user2Id       String?
+}
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// 노동 개미 / 보육 개미
+model Exam {
+    id       String @id @default(uuid())
+    title    String
+    grade    String
+    date     Int
+    testType String
+    question Int
+    contents String
+    Subject  String
+}
