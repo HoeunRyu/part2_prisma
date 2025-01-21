@@ -1,0 +1,99 @@
+model User {
+    id                  String                @id @default(uuid())
+    Resource            Resource[]
+    ReSourceAttachments ReSourceAttachments[]
+    ResourceOrder       ResourceOrder[]
+    ResourceReviews     ResourceReviews[]
+}
+
+//TODO: 프론트에서 데이터 가공해서 사용할수있을거같은 컬럼들
+//FIXME: 잘모르겠는 부분
+//XXX: 테이블 관계
+
+//자료 마켓 메인 데이터
+model Resource {
+    id            String    @id @default(uuid()) ///uuid: 데이터 생성할 떄마다 자동으로 생성됨
+    userId        String
+    title         String
+    price         Int       @default(0) ///TODO: 기본 0원, 무료로 프론트에서 알아서 해주세여~
+    category1     Category
+    category2     Category? ///카테고리1은 필수, 2는 선택 => TODO: 중복선택에 대해서는 api나 프론트단에서 해달라고 요청하기
+    thumbnailImg  String
+    thumbnailText String? ///이미지 글자는 선택사항
+    desc          String?
+    recommend     String[]
+    keyword       String[]
+    isDeleted     Boolean   @default(false) ///XXX: 유저가 자료를 삭제해도 다른 유저가 해당 자료를 구매한 기록은 남아있도록 소프트딜리트
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    User                User                  @relation(fields: [userId], references: [id]) ///XXX: 유저-자료 1:N관계.
+    ReSourceAttachments ReSourceAttachments[] ///XXX: 자료-첨부파일 1:N관계
+    ResourceOrder       ResourceOrder[] ///XXX: 자료-구매정보 1:N관계 : 하나의 자료에 대해 여러개의 구매 가능
+    ResourceReviews     ResourceReviews[] ///XXX: 자료-리뷰 1:N관계
+
+    @@index([category1]) ///XXX: 카테고리 조회 빠르게 하기 위함. 필요없나..??
+}
+
+//한 자료당 첨부 파일
+model ReSourceAttachments {
+    id           String  @id @default(uuid())
+    userId       String
+    resourceId   String
+    attachments  String //FIXME: 그냥 스트링으로 받는거 맞는지 
+    isDownloaded Boolean @default(false)
+    isDeleted    Boolean @default(false)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    User     User     @relation(fields: [userId], references: [id]) ///FIXME: 유저-첨부파일 1:N관계? N:N관계?? 어떤 유저가 첨부파일을 열람했는지 확인하려고 하는데, 이게 다대다 관계인지. 하나의 자료에 대한 하나의 첨부파일에 대해 여러 유저가 확인할수있잫아... 그럼 오더랑 연결해야되나...?
+    Resource Resource @relation(fields: [resourceId], references: [id]) ///자료-첨부파일 1:N관계
+}
+
+//자료 구매 정보
+//FIXME: 첨부파일을 확인하면 구매완료에서 구매확정으로 상태달라짐. 리소스에서 첨부파일 조회가능하므로 리소스만 참조거는게 맞는지, 아니면 첨부파일도 참조걸어야하는지.
+model ResourceOrder {
+    id         String @id @default(uuid())
+    userId     String
+    resourceId String
+    status     String ///구매완료 | 구매확정 | 구매취소 ///FIXME: 결제테이블이랑 연결해야됨.
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    User     User     @relation(fields: [userId], references: [id])
+    Resource Resource @relation(fields: [resourceId], references: [id])
+}
+
+//FIXME: 유저가 해당 자료를 구매하고 첨부파일을 확인했는지에 대해 리소스와 유저테이블만으로 알수있으므로 따로 오더나 첨부파일 참조걸지않고 지금처럼 하는게맞는지.
+model ResourceReviews {
+    id         String  @id @default(uuid())
+    userId     String
+    resourceId String
+    rating     Int
+    review     String
+    isDeleted  Boolean
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    User     User     @relation(fields: [userId], references: [id])
+    Resource Resource @relation(fields: [resourceId], references: [id])
+}
+
+///TODO:한글 이름은 프론트에서 매칭해서 쓰세여~
+enum Category {
+    CSAT //정시
+    ADMISSION //수시
+    SCHOOL //내신
+    ESSAY //논술
+    KOR //국어
+    ENG //영어
+    MATH //수학
+    SOCIAL //사탐
+    SCIENCE //과탐
+    ART //예체능
+    ETC //기타
+}

@@ -28,3 +28,8 @@ Content-Type: application/json
 ###
 
 DELETE http://localhost:8000/users/b8f11e76-0a9e-4b3f-bccf-8d9b4fbf331e
+
+###
+
+GET http://localhost:8000/users/order/fd3ae0a5-8dd5-40b6-b8fd-48870f731db1
+
