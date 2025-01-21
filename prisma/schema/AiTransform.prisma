@@ -1,0 +1,29 @@
+model User {
+  id            Int                 @id @default(autoincrement())
+  inputContents QustioneTransform[]
+}
+
+/// 프론트에서 베리 검증 로직?
+/// 문제, 지문 입력
+model QustioneTransform {
+  id                 Int                  @id @default(autoincrement())
+  userId             Int
+  user               User                 @relation(fields: [userId], references: [id])
+  prompt             String // 사용자가 입력한 지문
+  question           String // 사용자가 입력한 문제
+  createdAt          DateTime             @default(now()) // 생성 날짜
+  AIProcessedContent AIProcessedContent[]
+}
+
+/// 사용자의 베리가 충분할 경우에만 AIProcessedContent 생성.
+/// AIProcessedContent가 생성되면, 사용자의 베리를 차감.
+/// AI답변
+model AIProcessedContent {
+  id                  Int               @id @default(autoincrement())
+  QustioneTransformId Int
+  QustioneTransform   QustioneTransform @relation(fields: [QustioneTransformId], references: [id])
+  transformedQuestion String? // AI가 생성한 변형 문제
+  explanation         String? // AI가 생성한 해설
+  keywords            String? // AI가 생성한 키워드 (JSON 배열 형태로 저장)
+  createdAt           DateTime          @default(now())
+}
