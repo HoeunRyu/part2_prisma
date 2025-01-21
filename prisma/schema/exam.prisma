@@ -1,0 +1,33 @@
+model User {
+    id        String  @id @default(uuid())
+    nickName  String
+    introduce String
+    isActive  Boolean
+
+    SearchLog SearchLog[]
+}
+
+/// 기출검색
+model SearchLog {
+    id            String  @id @default(uuid())
+    userId        String?
+    searchKeyword String
+    User          User?   @relation(fields: [userId], references: [id])
+    exam          Exam    @relation(fields: [examId], references: [id])
+    User2         Berry   @relation(fields: [User2Id], references: [User])
+    examId        String
+    User2Id       String  @unique
+}
+
+/// 기출문제
+model Exam {
+    id         String      @id @default(uuid())
+    title      String
+    grade      String
+    date       Int
+    testType   String
+    question   Int
+    contents   String
+    Subject    String
+    searchLogs SearchLog[]
+}
