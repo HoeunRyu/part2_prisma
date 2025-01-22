@@ -9,6 +9,7 @@ model QustioneTransform {
   id                 Int                  @id @default(autoincrement())
   userId             Int
   user               User                 @relation(fields: [userId], references: [id])
+  language           String
   prompt             String // 사용자가 입력한 지문
   question           String // 사용자가 입력한 문제
   createdAt          DateTime             @default(now()) // 생성 날짜
