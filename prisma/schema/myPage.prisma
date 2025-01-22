@@ -8,10 +8,10 @@ model User {
   ///1:1
   Account           Account? ///계좌 등록하기
   ProceedsAvailable ProceedsAvailable? ///출금가능수익금
-  WithdrawalHistory WithdrawalHistory? ///출금내역
   ///1:N
   Berry             Berry[] ///베리 충전 및 내역
   WithdrawalRequest WithdrawalRequest[] ///출금 신청
+  WithdrawalHistory WithdrawalHistory[] ///출금내역
   // BuyMaterial BuyMaterial[]
   // updateMaterial UpdateMaterial[]
   QA                QA[]
@@ -25,6 +25,7 @@ model Berry {
   transactionDate DateTime @default(now()) // 거래 일시
   UserId          String
   User            User     @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  // SearchLog SearchLog? //합치고 주석 풀기(민호님꺼 SearchLog)
 }
 
 // 자료 보관함
@@ -82,11 +83,11 @@ model WithdrawalHistory {
 
 //문의&건의
 model QA {
-  id         String @id @default(uuid())
+  id         String  @id @default(uuid())
   object     String
   content    String
-  email      String
-  callNumber String
-  UserId     String @unique
-  User       User   @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  email      String? //선택입력
+  callNumber String? //선택입력
+  UserId     String  @unique
+  User       User    @relation(fields: [UserId], references: [id], onDelete: Cascade)
 }
