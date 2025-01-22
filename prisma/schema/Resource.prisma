@@ -1,10 +1,10 @@
-model User {
-    id                  String                @id @default(uuid())
-    resource            Resource[]
-    resourceOrder       ResourceOrder[]
-    resourceReviews     ResourceReviews[]
-    resourceDownloadLog ResourceDownloadLog[]
-}
+// model User {
+//     id                  String                @id @default(uuid())
+//     resource            Resource[]
+//     resourceOrder       ResourceOrder[]
+//     resourceReviews     ResourceReviews[]
+//     resourceDownloadLog ResourceDownloadLog[]
+// }
 
 //TODO: 프론트에서 데이터 가공해서 사용할수있을거같은 컬럼들
 //FIXME: 잘모르겠는 부분

@@ -1,11 +1,11 @@
-model User {
-    id        String  @id @default(uuid())
-    nickName  String
-    introduce String
-    isActive  Boolean
+// model User {
+//     id        String  @id @default(uuid())
+//     nickName  String
+//     introduce String
+//     isActive  Boolean
 
-    SearchLog SearchLog[]
-}
+//     SearchLog SearchLog[]
+// }
 
 /// 기출검색
 model SearchLog {
@@ -30,4 +30,8 @@ model Exam {
     contents   String
     Subject    String
     searchLogs SearchLog[]
+}
+
+model Berry {
+    SearchLog SearchLog?
 }
