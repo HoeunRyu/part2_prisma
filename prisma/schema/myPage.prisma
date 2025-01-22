@@ -3,7 +3,7 @@ model User {
   id        String  @id @default(uuid())
   nickName  String
   introduce String
-  isActive  Boolean
+  isDeleted Boolean @default(false) //소프트딜리트
 
   ///1:1
   Account           Account? ///계좌 등록하기
@@ -23,9 +23,10 @@ model Berry {
   amount          Int // 변동된 베리의 양 (충전은 +, 사용은 -, 적립은 +)
   status          String // 상태: '사용', '적립', '충전'
   transactionDate DateTime @default(now()) // 거래 일시
+  isDeleted       Boolean  @default(false) //소프트딜리트
   UserId          String
-  User            User     @relation(fields: [UserId], references: [id], onDelete: Cascade)
-  // SearchLog SearchLog? //합치고 주석 풀기(민호님꺼 SearchLog)
+  User            User     @relation(fields: [UserId], references: [id])
+  // SearchLog SearchLog? //합치고 주석 풀기(민호님꺼 SearchLog와 관계)
 }
 
 // 자료 보관함
@@ -54,11 +55,12 @@ model Account {
 
 ///출금 가능 수익금
 model ProceedsAvailable {
-  id            String @id @default(uuid())
+  id            String  @id @default(uuid())
   totalEarnings Int // 출금 가능한 총 수익금
   available     Int // 실제 출금 가능한 금액 (예: 출금 대기 중인 금액 제외)
-  UserId        String @unique
-  User          User   @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  isDeleted     Boolean @default(false) //소프트딜리트
+  UserId        String  @unique
+  User          User    @relation(fields: [UserId], references: [id])
 }
 
 ///출금 신청
@@ -67,8 +69,9 @@ model WithdrawalRequest {
   requestAmount Int // 출금 신청 금액
   requestDate   DateTime @default(now()) // 출금 신청 날짜
   status        String // 출금 신청 상태 
+  isDeleted     Boolean  @default(false) //소프트딜리트
   UserId        String   @unique
-  User          User     @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  User          User     @relation(fields: [UserId], references: [id])
 }
 
 ///출금 내역
@@ -77,8 +80,9 @@ model WithdrawalHistory {
   amount        Int // 출금된 금액
   completedDate DateTime @default(now()) // 출금 완료 날짜
   status        String // 출금 상태
+  isDeleted     Boolean  @default(false) //소프트딜리트
   UserId        String   @unique
-  User          User     @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  User          User     @relation(fields: [UserId], references: [id])
 }
 
 //문의&건의
@@ -89,5 +93,5 @@ model QA {
   email      String? //선택입력
   callNumber String? //선택입력
   UserId     String  @unique
-  User       User    @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  User       User    @relation(fields: [UserId], references: [id], onDelete: Cascade) //하드딜리트
 }
