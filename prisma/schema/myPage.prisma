@@ -1,0 +1,97 @@
+//1. 내프로필
+model User {
+  id        String  @id @default(uuid())
+  nickName  String
+  introduce String
+  isDeleted Boolean @default(false) //소프트딜리트
+
+  ///1:1
+  Account           Account? ///계좌 등록하기
+  ProceedsAvailable ProceedsAvailable? ///출금가능수익금
+  ///1:N
+  Berry             Berry[] ///베리 충전 및 내역
+  WithdrawalRequest WithdrawalRequest[] ///출금 신청
+  WithdrawalHistory WithdrawalHistory[] ///출금내역
+  // BuyMaterial BuyMaterial[]
+  // updateMaterial UpdateMaterial[]
+  QA                QA[]
+}
+
+// 베리 충전 및 내역 
+model Berry {
+  id              String   @id @default(uuid())
+  amount          Int // 변동된 베리의 양 (충전은 +, 사용은 -, 적립은 +)
+  status          String // 상태: '사용', '적립', '충전'
+  transactionDate DateTime @default(now()) // 거래 일시
+  isDeleted       Boolean  @default(false) //소프트딜리트
+  UserId          String
+  User            User     @relation(fields: [UserId], references: [id])
+  // SearchLog SearchLog? //합치고 주석 풀기(민호님꺼 SearchLog와 관계)
+}
+
+// 자료 보관함
+//구매 자료
+model BuyMaterial {
+  id String @id @default(uuid())
+  //자료 마켓과 관계
+}
+
+//판매 자료
+model UpdateMaterial {
+  id String @id @default(uuid())
+  //자료 마켓과 관계
+}
+
+//환전소
+///계좌 등록하기
+model Account {
+  id            String @id @default(uuid())
+  bankName      String // 은행명
+  accountNumber String // 계좌 번호
+  accountHolder String // 예금주
+  UserId        String @unique
+  User          User   @relation(fields: [UserId], references: [id], onDelete: Cascade)
+}
+
+///출금 가능 수익금
+model ProceedsAvailable {
+  id            String  @id @default(uuid())
+  totalEarnings Int // 출금 가능한 총 수익금
+  available     Int // 실제 출금 가능한 금액 (예: 출금 대기 중인 금액 제외)
+  isDeleted     Boolean @default(false) //소프트딜리트
+  UserId        String  @unique
+  User          User    @relation(fields: [UserId], references: [id])
+}
+
+///출금 신청
+model WithdrawalRequest {
+  id            String   @id @default(uuid())
+  requestAmount Int // 출금 신청 금액
+  requestDate   DateTime @default(now()) // 출금 신청 날짜
+  status        String // 출금 신청 상태 
+  isDeleted     Boolean  @default(false) //소프트딜리트
+  UserId        String   @unique
+  User          User     @relation(fields: [UserId], references: [id])
+}
+
+///출금 내역
+model WithdrawalHistory {
+  id            String   @id @default(uuid())
+  amount        Int // 출금된 금액
+  completedDate DateTime @default(now()) // 출금 완료 날짜
+  status        String // 출금 상태
+  isDeleted     Boolean  @default(false) //소프트딜리트
+  UserId        String   @unique
+  User          User     @relation(fields: [UserId], references: [id])
+}
+
+//문의&건의
+model QA {
+  id         String  @id @default(uuid())
+  object     String
+  content    String
+  email      String? //선택입력
+  callNumber String? //선택입력
+  UserId     String  @unique
+  User       User    @relation(fields: [UserId], references: [id], onDelete: Cascade) //하드딜리트
+}
