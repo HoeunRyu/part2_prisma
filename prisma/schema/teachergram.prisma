@@ -15,7 +15,8 @@ model Questions {
 
 // 티쳐그램 선택지 목록
 model Answers {
-    id String @id @default(uuid())
+    id         String @id @default(uuid())
+    answerlist String // 5가지 답변
 }
 
 // 강사 유형
