@@ -1,13 +1,13 @@
-model User {
-  id            Int                 @id @default(autoincrement())
-  inputContents QustioneTransform[]
-}
+// model User {
+//   id            Int                 @id @default(autoincrement())
+//   inputContents QustioneTransform[]
+// }
 
 /// 프론트에서 베리 검증 로직?
 /// 문제, 지문 입력
 model QustioneTransform {
   id                 Int                  @id @default(autoincrement())
-  userId             Int
+  userId             String // Int에서 String으로 변경
   user               User                 @relation(fields: [userId], references: [id])
   language           String
   prompt             String // 사용자가 입력한 지문

@@ -15,6 +15,27 @@ model User {
   // BuyMaterial BuyMaterial[]
   // updateMaterial UpdateMaterial[]
   QA                QA[]
+
+  // exam.prisma 연동
+  SearchLog SearchLog[]
+
+  // Resource.prisma 연동
+  resource            Resource[]
+  resourceOrder       ResourceOrder[]
+  resourceReviews     ResourceReviews[]
+  resourceDownloadLog ResourceDownloadLog[]
+
+  // talktalkbear.prisma 연동
+  TalkTalkBearUsers TalkTalkBearUsers?
+  TalkTalkBearChat  TalkTalkBearChat?
+  chatLogs          chatLogs?
+
+  // teachergram.prisma 연동
+  userResponse userResponse?
+  results      results?
+
+  // AiTransform.prisma 연동
+  inputContents QustioneTransform[]
 }
 
 // 베리 충전 및 내역 
