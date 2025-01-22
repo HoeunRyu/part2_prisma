@@ -10,13 +10,13 @@ model User {
 /// 기출검색
 model SearchLog {
     id            String  @id @default(uuid())
-    userId        String?
     searchKeyword String
+    userId        String?
     User          User?   @relation(fields: [userId], references: [id])
     exam          Exam    @relation(fields: [examId], references: [id])
-    User2         Berry   @relation(fields: [User2Id], references: [id])
     examId        String
-    User2Id       String  @unique
+    berry         Berry   @relation(fields: [berryId], references: [id])
+    berryId       String  @unique
 }
 
 /// 기출문제
