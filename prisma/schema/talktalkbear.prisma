@@ -12,9 +12,9 @@ model User {
 //톡톡베어 사용자 정보
 model TalkTalkBearUsers {
     id              String @id @default(uuid())
-    remaining_talks Int //남은 대화 횟수
+    remainingTalks Int //남은 대화 횟수
     userId          String @unique
-    user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user            User   @relation(fields: [userId], references: [id], onDelete: Cascade) //User모델 참조 
 }
 
 //톡톡베어 대화
