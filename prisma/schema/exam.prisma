@@ -14,7 +14,7 @@ model SearchLog {
     searchKeyword String
     User          User?   @relation(fields: [userId], references: [id])
     exam          Exam    @relation(fields: [examId], references: [id])
-    User2         Berry   @relation(fields: [User2Id], references: [User])
+    User2         Berry   @relation(fields: [User2Id], references: [id])
     examId        String
     User2Id       String  @unique
 }
