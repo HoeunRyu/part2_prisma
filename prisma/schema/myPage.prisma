@@ -70,7 +70,7 @@ model WithdrawalRequest {
   requestDate   DateTime @default(now()) // 출금 신청 날짜
   status        String // 출금 신청 상태 
   isDeleted     Boolean  @default(false) //소프트딜리트
-  UserId        String   @unique
+  UserId        String //User와 1:N관계로 unique 삭제
   User          User     @relation(fields: [UserId], references: [id])
 }
 
@@ -81,7 +81,7 @@ model WithdrawalHistory {
   completedDate DateTime @default(now()) // 출금 완료 날짜
   status        String // 출금 상태
   isDeleted     Boolean  @default(false) //소프트딜리트
-  UserId        String   @unique
+  UserId        String //User와 1:N관계로 unique 삭제
   User          User     @relation(fields: [UserId], references: [id])
 }
 
@@ -92,6 +92,6 @@ model QA {
   content    String
   email      String? //선택입력
   callNumber String? //선택입력
-  UserId     String  @unique
+  UserId     String //User와 1:N관계로 unique 삭제
   User       User    @relation(fields: [UserId], references: [id], onDelete: Cascade) //하드딜리트
 }
